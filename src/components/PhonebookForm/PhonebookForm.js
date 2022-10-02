@@ -5,7 +5,10 @@ import { LabelName, AddButton } from './Phonebook.styled';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { selectLoading } from 'redux/contacts/selectors';
-import { useGetContactsQuery } from 'redux/contacts/contactsSlice';
+import {
+  useAddContactsMutation,
+  useGetContactsQuery,
+} from 'redux/contacts/contactsSlice';
 
 const ErrorText = styled(ErrorMessage)`
   color: red;
@@ -41,7 +44,10 @@ const initialValues = {
 
 export const PhonebookForm = ({ onAddContact, onReviewName }) => {
   // const loading = useSelector(selectLoading);
-  const { isLoading: loading } = useGetContactsQuery();
+  const { isLoading } = useGetContactsQuery();
+
+  // const [mutator, { isLoading }] = useAddContactsMutation();
+  // console.log('asd', isLoading);
   const handleSubmit = (values, actions) => {
     if (onReviewName(values.name)) {
       alert(`${values.name} is already in contacts.`);
@@ -68,7 +74,7 @@ export const PhonebookForm = ({ onAddContact, onReviewName }) => {
           <Field type="tel" name="phone" />
           <ErrorText component="p" name="phone" />
         </label>
-        <AddButton type="submit" disabled={loading}>
+        <AddButton type="submit" disabled={isLoading}>
           Add contact
         </AddButton>
       </Form>

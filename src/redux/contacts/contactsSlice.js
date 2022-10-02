@@ -14,13 +14,10 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const contactsSlice = createSlice({
   name: 'contactsFilter',
-  initialState: {
-    // items: [], isLoading: false, error: null,
-    filter: '',
-  },
+  initialState: '',
   reducers: {
     filter(state, action) {
-      state.filter = action.payload;
+      return (state = action.payload);
     },
   },
   // extraReducers: {
@@ -62,9 +59,28 @@ export const contactsApi = createApi({
       query: () => `/contacts`,
       providesTags: ['Contacts'],
     }),
+    addContacts: builder.mutation({
+      query: contact => ({
+        url: `/contacts`,
+        method: 'POST',
+        body: contact,
+      }),
+      invalidatesTags: ['Contacts'],
+    }),
+    deleteContacts: builder.mutation({
+      query: id => ({
+        url: `/contacts/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Contacts'],
+    }),
   }),
 });
 
-export const { useGetContactsQuery } = contactsApi;
+export const {
+  useGetContactsQuery,
+  useAddContactsMutation,
+  useDeleteContactsMutation,
+} = contactsApi;
 export const contactsReducer = contactsSlice.reducer;
 export const { filter } = contactsSlice.actions;

@@ -8,7 +8,11 @@ import { Spinner } from './Spinner/Spinner';
 import { filter } from 'redux/contacts/contactsSlice';
 import { operations, selectors } from 'redux/contacts';
 import { Message } from './Message/Message';
-import { useGetContactsQuery } from 'redux/contacts/contactsSlice';
+import {
+  useGetContactsQuery,
+  useAddContactsMutation,
+  useDeleteContactsMutation,
+} from 'redux/contacts/contactsSlice';
 
 export const App = () => {
   const dispatch = useDispatch();
@@ -17,8 +21,12 @@ export const App = () => {
   // const loading = useSelector(selectors.selectLoading);
   // const messageError = useSelector(selectors.selectErrorMessage);
   // const visibleContacts = useSelector(selectors.selectVisibleContacts);
-  const { data: contacts } = useGetContactsQuery();
-
+  const { data: contacts, error } = useGetContactsQuery();
+  const [addContactsMutator, { isError, error: e, isLoading }] =
+    useAddContactsMutation();
+  const [deleteContactMutator] = useDeleteContactsMutation();
+  // console.log(error);
+  // console.log("app",isLoading);
   // useEffect(() => {
   //   dispatch(operations.fetchContacts());
   // }, [dispatch]);
@@ -27,17 +35,38 @@ export const App = () => {
     return contacts.find(contact => contact.name === name);
   };
 
-  const addContact = contact => {
-    dispatch(operations.addNewContact(contact));
+  const addContact = async contact => {
+    try {
+      await addContactsMutator(contact);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const removeContact = removeContactId => {
-    dispatch(operations.deleteContact(removeContactId));
+  const removeContact = async removeContactId => {
+    try {
+      await deleteContactMutator(removeContactId);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const changeFilter = e => {
     dispatch(filter(e.currentTarget.value.trimStart()));
   };
+
+  const getVisibleContacts = () => {
+    if (!contacts) {
+      return;
+    }
+    const filterNameNormalized = name.toLowerCase();
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filterNameNormalized)
+    );
+  };
+
+  const visibleContacts = getVisibleContacts();
+  // console.log('vc', visibleContacts);
 
   return (
     <>
@@ -46,7 +75,7 @@ export const App = () => {
           onAddContact={addContact}
           onReviewName={reviewNameInContacts}
         />
-        {/* <Spinner loading={loading} size={'56'} /> */}
+        <Spinner loading={isLoading} size={'56'} />
       </Section>
       <Section title="Contacts">
         <Filter
@@ -54,11 +83,13 @@ export const App = () => {
           value={name}
           onChange={changeFilter}
         />
-        {/* {messageError && <Message message={messageError} />} */}
-        {
-          // contacts.length > 0 &&
-          <Contacts onRemoveContact={removeContact} />
-        }
+        {isError && <Message message={error} />}
+        {visibleContacts && (
+          <Contacts
+            contacts={visibleContacts}
+            onRemoveContact={removeContact}
+          />
+        )}
       </Section>
     </>
   );

@@ -6,9 +6,9 @@ import { ButtonDelete } from 'components/ButtonDelete/ButtonDelete';
 // import { selectVisibleContacts } from 'redux/contacts/selectors';
 import { useGetContactsQuery } from 'redux/contacts/contactsSlice';
 
-export const Contacts = ({ onRemoveContact }) => {
+export const Contacts = ({ onRemoveContact, contacts }) => {
   // const visibleContacts = useSelector(selectVisibleContacts);
-  const { data: contacts } = useGetContactsQuery();
+  // const { data: contacts } = useGetContactsQuery();
   return (
     <Box as="ul" py={4}>
       {contacts &&
