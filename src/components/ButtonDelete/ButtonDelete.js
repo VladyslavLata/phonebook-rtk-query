@@ -3,10 +3,12 @@ import { useSelector } from 'react-redux';
 import { Button } from './ButtonDelete.styled';
 import { Spinner } from 'components/Spinner/Spinner';
 import { selectErrorMessage } from 'redux/contacts/selectors';
+import { useGetContactsQuery } from 'redux/contacts/contactsSlice';
 
 export const ButtonDelete = ({ onRemoveContact, id, children }) => {
   const [loading, setLoading] = useState(false);
-  const error = useSelector(selectErrorMessage);
+  // const error = useSelector(selectErrorMessage);
+  const { error } = useGetContactsQuery();
   if (error) {
     setLoading(false);
   }

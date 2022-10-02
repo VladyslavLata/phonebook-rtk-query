@@ -8,18 +8,20 @@ import { Spinner } from './Spinner/Spinner';
 import { filter } from 'redux/contacts/contactsSlice';
 import { operations, selectors } from 'redux/contacts';
 import { Message } from './Message/Message';
+import { useGetContactsQuery } from 'redux/contacts/contactsSlice';
 
 export const App = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(selectors.selectContacts);
+  // const contacts = useSelector(selectors.selectContacts);
   const name = useSelector(selectors.selectFilterName);
-  const loading = useSelector(selectors.selectLoading);
-  const messageError = useSelector(selectors.selectErrorMessage);
-  const visibleContacts = useSelector(selectors.selectVisibleContacts);
+  // const loading = useSelector(selectors.selectLoading);
+  // const messageError = useSelector(selectors.selectErrorMessage);
+  // const visibleContacts = useSelector(selectors.selectVisibleContacts);
+  const { data: contacts } = useGetContactsQuery();
 
-  useEffect(() => {
-    dispatch(operations.fetchContacts());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(operations.fetchContacts());
+  // }, [dispatch]);
 
   const reviewNameInContacts = name => {
     return contacts.find(contact => contact.name === name);
@@ -44,7 +46,7 @@ export const App = () => {
           onAddContact={addContact}
           onReviewName={reviewNameInContacts}
         />
-        <Spinner loading={loading} size={'56'} />
+        {/* <Spinner loading={loading} size={'56'} /> */}
       </Section>
       <Section title="Contacts">
         <Filter
@@ -52,10 +54,11 @@ export const App = () => {
           value={name}
           onChange={changeFilter}
         />
-        {messageError && <Message message={messageError} />}
-        {visibleContacts.length > 0 && (
+        {/* {messageError && <Message message={messageError} />} */}
+        {
+          // contacts.length > 0 &&
           <Contacts onRemoveContact={removeContact} />
-        )}
+        }
       </Section>
     </>
   );

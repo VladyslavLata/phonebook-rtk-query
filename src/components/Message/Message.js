@@ -9,6 +9,6 @@ export const Message = ({ message }) => {
   );
 };
 
-Message.propTypes = {
-  message: PropTypes.string.isRequired,
-};
+// Message.propTypes = {
+//   message: PropTypes.string.isRequired,
+// };
